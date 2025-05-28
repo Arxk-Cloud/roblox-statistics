@@ -33,6 +33,14 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           workingDirectory: .
 
+      # Login to docker registry
+      - name: 🔑 Login to docker registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REPOSITORY_PASSWORD  }}
+
       # Deploy to Trigger.dev
       - name: 🚀 Deploy to Trigger.dev
         env:
@@ -40,18 +48,3 @@ jobs:
           TRIGGER_API_URL: ${{ secrets.TRIGGER_API_URL }}
         run: |
           pnpm dlx trigger.dev@latest deploy --self-hosted --push
-        continue-on-error: true
-        id: trigger-deploy
-
-      - name: 📋 Output Trigger.dev logs on failure
-        if: steps.trigger-deploy.outcome == 'failure'
-        run: |
-          echo "Trigger.dev deployment failed. Searching for build logs..."
-          find /tmp -name "*.log" -type f -exec echo "=== {} ===" \; -exec cat {} \; 2>/dev/null || echo "No log files found in /tmp"
-
-          # Also try to find any trigger-related directories
-          find /tmp -name "trigger-*" -type d 2>/dev/null | head -5 | while read dir; do
-            echo "=== Contents of $dir ==="
-            ls -la "$dir" 2>/dev/null || echo "Cannot list directory contents"
-            find "$dir" -name "*.log" -type f -exec echo "--- {} ---" \; -exec cat {} \; 2>/dev/null
-          done
