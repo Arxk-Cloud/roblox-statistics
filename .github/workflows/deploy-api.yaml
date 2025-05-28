@@ -1,0 +1,48 @@
+name: 🏗️ Deploy Roblox Statistics API to Cloudflare Workers and Trigger.dev
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare Workers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          cd .
+          pnpm install --ignore-workspace
+
+      - name: Publish to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: .
+
+      # Install all packages
+      - name: 📥 Install packages
+        run: |
+          pnpm add @trigger.dev/sdk @trigger.dev/build
+
+      # Deploy to Trigger.dev
+      - name: 🚀 Deploy to Trigger.dev
+        env:
+          TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
+          TRIGGER_API_URL: ${{ secrets.TRIGGER_API_URL }}
+        run: |
+          pnpm dlx trigger.dev@latest deploy --self-hosted --push

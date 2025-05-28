@@ -1,0 +1,42 @@
+{
+	"name": "roblox-statistics",
+	"version": "1.0.0",
+	"description": "Cloudflare worker for roblox statistics",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev --port 9000 --env development",
+		"trigger:dev": "pnpm dlx trigger.dev@latest dev",
+		"trigger:deploy": "pnpm dlx trigger.dev@latest deploy --self-hosted --push",
+		"db:push": "pnpm drizzle-kit push",
+		"db:generate": "pnpm drizzle-kit generate",
+		"db:studio": "pnpm drizzle-kit studio",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.7.5",
+		"@eslint/eslintrc": "^3.3.0",
+		"@eslint/js": "^9.21.0",
+		"@paralleldrive/cuid2": "^2.2.2",
+		"@trigger.dev/build": "^3.3.17",
+		"@types/eslint": "^9.6.1",
+		"@types/eslint__eslintrc": "^2.1.2",
+		"@typescript-eslint/eslint-plugin": "^8.32.1",
+		"@typescript-eslint/parser": "8.25.0",
+		"drizzle-kit": "^0.31.1",
+		"eslint": "^9.18.0",
+		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-prettier": "^5.2.3",
+		"tsx": "^4.19.4",
+		"typescript": "^5.5.2",
+		"wrangler": "^4.9.1"
+	},
+	"dependencies": {
+		"@libsql/client": "^0.15.6",
+		"@trigger.dev/sdk": "^3.3.17",
+		"dotenv": "^16.5.0",
+		"drizzle-orm": "^0.43.1",
+		"hono": "^4.7.10"
+	}
+}
