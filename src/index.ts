@@ -9,6 +9,7 @@ import { showRoutes } from "hono/dev";
 import { logging } from "./middleware/logging";
 import { parseGzippedJson } from "./middleware/gzip-json";
 import { errorHandler } from "./middleware/error";
+import { authMiddleware } from "./middleware/auth";
 
 interface Env {
   DB: D1Database;
@@ -27,6 +28,9 @@ app.use(parseGzippedJson);
 
 // Error handler
 app.onError(errorHandler);
+
+// Auth middleware
+app.use(authMiddleware);
 
 app.get("/", (c) => {
   return c.json({
