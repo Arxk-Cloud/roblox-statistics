@@ -20,6 +20,9 @@ interface Env {
 
 const app = new Hono<{ Bindings: Env }>();
 
+// Setup cors
+app.use("*", cors());
+
 // Logging
 app.use(logging);
 
@@ -41,15 +44,6 @@ app.get("/", (c) => {
 app.get("/api/getTopEarningPosition", getTopEarningPosition);
 app.get("/api/getAllTopEarning", getAllTopEarning);
 app.post("/api/updateTopEarning", updateTopEarning);
-
-app.use("*", cors({
-  origin: "*",
-  allowHeaders: ["Content-Type", "Authorization"],
-  allowMethods: ["POST", "GET", "OPTIONS"],
-  exposeHeaders: ["Content-Length"],
-  maxAge: 600,
-  credentials: true,
-}));
 
 // Show routes
 showRoutes(app);
